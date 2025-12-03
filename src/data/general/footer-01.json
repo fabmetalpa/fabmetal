@@ -1,0 +1,335 @@
+{
+    "id": "footer-data-01",
+    "logo-widget": {
+        "logo": [
+            {
+                "src": "/images/logo/logo-white.png",
+                "alt": "logo"
+            }
+        ],
+        "text": "Created with the collaboration of over 60 of the world's best Nuron Artists."
+    },
+    "newsletter-widget": {
+        "title": "Get The Latest Nuron Updates",
+        "note": "Email is safe. We don't spam."
+    },
+    "col1": {
+        "title": "Industria Alimentaria",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Armarios",
+                "path": "/categoria/Armarios"
+            },
+            {
+                "id": 2,
+                "text": "Baños María",
+                "path": "/categoria/Baños María"
+            },
+            {
+                "id": 3,
+                "text": "Campanas Extractoras",
+                "path": "/categoria/Campanas Extractoras"
+            },
+            {
+                "id": 4,
+                "text": "Estanterías y Repisas",
+                "path": "/categoria/Estanterías y Repisas"
+            },
+            {
+                "id": 5,
+                "text": "Estufas",
+                "path": "/categoria/Estufas"
+            },
+            {
+                "id": 6,
+                "text": "Lavamanos y Fregadores",
+                "path": "/categoria/Lavamanos y Fregadores"
+            },
+            {
+                "id": 5,
+                "text": "Mesas de trabajo",
+                "path": "/categoria/Mesas de trabajo"
+            },
+            {
+                "id": 6,
+                "text": "Sistema de Rieles",
+                "path": "/categoria/Sistema de Rieles"
+            }
+            
+        ]
+    },
+    "col3": {
+        "title": "Vitrinas Calientes",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Autoservicio",
+                "path": "/categoria/Autoservicio"
+            },
+            {
+                "id": 2,
+                "text": "Panadería",
+                "path": "/categoria/Panadería"
+            },
+            {
+                "id": 3,
+                "text": "Pizzería",
+                "path": "/categoria/Pizzería"
+            }
+        ]
+    },
+
+    "col4": {
+        "title": "Vitrinas Refrigeradas",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Autoservicio",
+                "path": "/categoria/Autoservicio"
+            },
+            {
+                "id": 2,
+                "text": "Bar",
+                "path": "/categoria/Bar"
+            },
+            {
+                "id": 3,
+                "text": "Carnes y Embutidos",
+                "path": "/categoria/Carnes y Embutidos"
+            },
+            {
+                "id": 4,
+                "text": "Mariscos",
+                "path": "/categoria/Mariscos"
+            }
+        ]
+    },
+
+
+    "col5": {
+        "title": "Servicio Técnico",
+        "subTitle": "",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Refrigeración Comercial",
+                "path": "/categoria/Refrigeracion Comercial"
+            },
+            {
+                "id": 2,
+                "text": "Soldadura TIG",
+                "path": "/categoria/Soldadura TIG"
+            }
+        ]
+    },
+
+
+    
+    "col6": {
+        "title": "Industria Constructora",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Barandas y Pasamanos",
+                "path": "/categoria/Barandas y Pasamanos"
+            },
+            {
+                "id": 2,
+                "text": "Barras de Apoyo",
+                "path": "/categoria/Barras de Apoyo"
+            },
+            {
+                "id": 3,
+                "text": "Parachoques",
+                "path": "/categoria/Parachoques"
+            },
+            {
+                "id": 4,
+                "text": "Reposapiés",
+                "path": "/categoria/Reposapiés"
+            }
+        ]
+    },
+
+
+    
+    "col7": {
+        "title": "Nosotros",
+        "menu": [
+            {
+                "id": 1,
+                "text": "La Empresa",
+                "path": "/nosotros"
+            },
+            {
+                "id": 2,
+                "text": "Contacto",
+                "path": "/contacto"
+            }
+        ]
+    },
+
+    "col8": {
+        "title": "Industria Médica",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Asientos y Banquillos",
+                "path": "/categoria/Reposapiés"
+            },
+            {
+                "id": 2,
+                "text": "Bassinettes",
+                "path": "/categoria/Bassinettes"
+            },
+            {
+                "id": 3,
+                "text": "Carros Hospitalarios",
+                "path": "/categoria/Carros Hospitalarios"
+            },
+            {
+                "id": 4,
+                "text": "Gabinetes y Estanterías",
+                "path": "/categoria/Gabinetes y Estanterías"
+            },
+            {
+                "id": 5,
+                "text": "Lavamanos Quirúrgicos",
+                "path": "/categoria/Lavamanos Quirúrgicos"
+            },
+            {
+                "id": 6,
+                "text": "Mesas Hospitalarias",
+                "path": "/categoria/Mesas Hospitalarias"
+            },
+            {
+                "id": 7,
+                "text": "Muebles Aéreos",
+                "path": "/categoria/Muebles Aéreos"
+            }
+        ]
+    },
+    
+    "quicklink-widget": {
+        "title": "Nuron",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Protocol Explore",
+                "path": "/explore-01"
+            },
+            {
+                "id": 2,
+                "text": "System Token",
+                "path": "/about"
+            },
+            {
+                "id": 3,
+                "text": "Otimize Time",
+                "path": "/about"
+            },
+            {
+                "id": 4,
+                "text": "Visual Checking",
+                "path": "/about"
+            },
+            {
+                "id": 5,
+                "text": "Fadeup System",
+                "path": "/blog"
+            },
+            {
+                "id": 6,
+                "text": "Activity Log",
+                "path": "/activity"
+            },
+            {
+                "id": 7,
+                "text": "System Auto Since",
+                "path": "/blog"
+            }
+        ]
+    },
+    "information-widget": {
+        "title": "Information",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Market Explore",
+                "path": "/explore-01"
+            },
+            {
+                "id": 2,
+                "text": "Ready Token",
+                "path": "/about"
+            },
+            {
+                "id": 3,
+                "text": "Otimize Time",
+                "path": "/about"
+            },
+            {
+                "id": 4,
+                "text": "Main Option",
+                "path": "/about"
+            },
+            {
+                "id": 5,
+                "text": "Blog Grid",
+                "path": "/blog"
+            },
+            {
+                "id": 6,
+                "text": "About Us",
+                "path": "/about"
+            },
+            {
+                "id": 7,
+                "text": "Fix Bug",
+                "path": "/blog"
+            }
+        ]
+    },
+    "soldout-widget": {
+        "title": "Recent Sold Out",
+        "products": [
+            {
+                "id": 1,
+                "title": "#21 The Wonder",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.244wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-01.jpg"
+                }
+            },
+            {
+                "id": 2,
+                "title": "Diamond Dog",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.022wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-02.jpg"
+                }
+            },
+            {
+                "id": 3,
+                "title": "Morgan11",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.892wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-03.jpg"
+                }
+            }
+        ]
+    },
+    "footer-link-widget": {
+        "menu": [
+           
+        ]
+    },
+    "copyright_text": "©2024 FABMETAL, Todos los derechos reservados"
+}

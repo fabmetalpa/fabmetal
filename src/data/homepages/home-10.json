@@ -1,0 +1,202 @@
+{
+    "title": "home-10",
+    "content": [
+        {
+            "section": "hero-section",
+            "headings": [
+                {
+                    "id": 1,     
+                    "content": "Fabricación de Equipo  y<br /> Mobiliario en Acero Inoxidable"
+                }
+            ],
+
+            "texts": [
+                {
+                    "id": 1,
+                    "content": " Podrás realizar tu pedido desde la web, si necesitas comunicarte con nosotros, estaremos disponible en nuestro WhatsApp y correo electrónico."
+                }
+            ],
+            "buttons": [
+                {
+                    "id": 1,
+                    "content": "Nosotros",
+                    "path": "/nosotros"
+                },
+                {
+                    "id": 2,
+                    "color": "primary-alta",
+                    "content": "Contáctanos",
+                    "path": "/contacto"
+                }
+            ],
+            "badges": [
+                {
+                    "title": "CALIDAD EN PRIMER LUGAR",
+                    "image": {
+                        "src": "/images/icons/rating-2.png"
+                    }
+                },
+                {
+                    "title": "LIDER EN FABRICACIÓN",
+                    "image": {
+                        "src": "/images/icons/trophy.png"
+                    }
+                }
+            ],
+            "images": [
+                {
+                    "src": "/images/banner/food-web-tape.png"
+                },
+                {
+                    "src": "/images/banner/construction-web-tape.png"
+                },
+                {
+                    "src": "/images/banner/web-medical-tape.png"
+                }
+            ]
+        },
+        {
+            "section": "category-section",
+            "items": [
+                {
+                    "id": 1,
+                    "title": "Equipamiento",
+                    "path": "/",
+                    "icon": "feather-image"
+                },
+                {
+                    "id": 2,
+                    "title": "Mobiliario",
+                    "path": "/",
+                    "icon": "feather-music"
+                },
+                {
+                    "id": 3,
+                    "title": "Vitrinas",
+                    "path": "/",
+                    "icon": "feather-map"
+                },
+                {
+                    "id": 4,
+                    "title": "Soldadura | TIG",
+                    "path": "/",
+                    "icon": "feather-search"
+                },
+                {
+                    "id": 5,
+                    "title": "Servicio Técnico",
+                    "path": "/",
+                    "icon": "feather-grid"
+                }
+            ]
+        },
+        {
+            "section": "service-section",
+            "section_title": {
+                "title": "Create and sell your NFTs"
+            },
+            "items": [
+                {
+                    "id": 1,
+                    "title": "Set up your wallet",
+                    "path": "/connect",
+                    "subtitle": "Step-01",
+                    "description": "Powerful features and inclusions, which makes Nuron standout, easily customizable and scalable.",
+                    "images": [
+                        {
+                            "src": "/images/icons/shape-7.png"
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "title": "Create your collection",
+                    "path": "/collection",
+                    "subtitle": "Step-02",
+                    "description": "A great collection of beautiful website templates for your need. Choose the best suitable template.",
+                    "images": [
+                        {
+                            "src": "/images/icons/shape-1.png"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "title": "Add your NFT's",
+                    "path": "/connect",
+                    "subtitle": "Step-03",
+                    "description": "We've made the template fully responsive, so it looks great on all devices: desktop, tablets and.",
+                    "images": [
+                        {
+                            "src": "/images/icons/shape-5.png"
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "title": "Sell Your NFT's",
+                    "path": "/creator",
+                    "subtitle": "Step-04",
+                    "description": "I throw myself down among the tall grass by the stream as I lie close to the earth NFT's.",
+                    "images": [
+                        {
+                            "src": "/images/icons/shape-6.png"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "section": "live-explore-section",
+            "section_title": {
+                "title": "Live Bidding"
+            }
+        },
+        {
+            "section": "newest-section",
+            "section_title": {
+                "title": "Newest Items"
+            }
+        },
+        {
+            "section": "top-sller-section",
+            "section_title": {
+                "title": "Top Seller in"
+            }
+        },
+        {
+            "section": "explore-product-section",
+            "section_title": {
+                "title": "Explore Product"
+            }
+        },
+        {
+            "section": "video-section",
+            "section_title": {
+                "title": "Soldadura Especializada | TIG",
+                "subtitle": "Aqui podemos colocar una breve descripcion de la categoria o eliminarlo en dado caso."
+            },
+            "images": [
+                {
+                    "src": "/images/bg/bg-image-21.jpg"
+                }
+            ],
+            "video": {
+                "videoId": "7e90gBu4pas"
+            }
+        },
+        {
+            "section": "collection-section",
+            "section_title": {
+                "title": "Top Collection"
+            }
+        },
+        {
+            "section": "newsletter-section",
+            "section_title": {
+                "title": "Join our newsletter",
+                "subtitle": "Weekly FREE UI resource stroight to your inbox"
+            }
+        }
+    ]
+}

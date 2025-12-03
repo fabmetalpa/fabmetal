@@ -1,0 +1,28 @@
+{
+    "id": "contact-data-01",
+    "map": {
+        "lat": -12.043333,
+        "lng": -77.028333,
+        "mapKey": "AIzaSyB3mMuvl8IUlviRZiizBiX7uhsdIqunx94"
+    },
+    "socials": [
+        {
+            "id": 1,
+            "icon": "feather-telegram",
+            "link": "https://facebook.com",
+            "title": "Facebook"
+        },
+        {
+            "id": 2,
+            "icon": "feather-whatsapp",
+            "link": "https://twitter.com",
+            "title": "Twitter"
+        },
+        {
+            "id": 5,
+            "icon": "feather-mail",
+            "link": "https://mail.com",
+            "title": "mail"
+        }
+    ]
+}

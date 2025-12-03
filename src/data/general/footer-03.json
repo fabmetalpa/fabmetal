@@ -1,0 +1,118 @@
+{
+    "id": "footer-data-01",
+    "logo-widget": {
+        "logo": [
+            {
+                "src": "/images/logo/logo-white.png",
+                "alt": "logo"
+            }
+        ],
+        "text": "Potencia tu rendimiento."
+    },
+    "newsletter-widget": {
+        "title": "Mantente conectado con nuestro Newsletter",
+        "note": "Tu correo estara seguro y libre de Spam."
+    },
+    "quicklink-widget": {
+        "title": "Categorias",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Ciclos",
+                "path": "/categoria/ciclos"
+            },
+            {
+                "id": 2,
+                "text": "Hgh-Peptidos",
+                "path": "/categoria/Hgh-Peptido"
+            },
+            {
+                "id": 3,
+                "text": "Inyectable",
+                "path": "/categoria/Inyectables"
+            },
+            {
+                "id": 4,
+                "text": "Orales",
+                "path": "/categoria/Orales"
+            },
+            {
+                "id": 5,
+                "text": "Quema Grasas",
+                "path": "/categoria/quema grasas"
+            },
+            {
+                "id": 6,
+                "text": "Sarms",
+                "path": "/categoria/sarms"
+            }
+        ]
+    },
+    "information-widget": {
+        "title": "Información",
+        "menu": [
+            {
+                "id": 1,
+                "text": "Nosotros",
+                "path": "/nosotros"
+            },
+            {
+                "id": 2,
+                "text": "Contacto",
+                "path": "/contact"
+            }
+        ]
+    },
+    "soldout-widget": {
+        "title": "Redes Sociales",
+        "products": [
+            {
+                "id": 1,
+                "title": "#21 The Wonder",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.244wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-01.jpg"
+                }
+            },
+            {
+                "id": 2,
+                "title": "Diamond Dog",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.022wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-02.jpg"
+                }
+            },
+            {
+                "id": 3,
+                "title": "Morgan11",
+                "path": "/product",
+                "highestBid": "Highest bid 1/20",
+                "price": "0.892wETH",
+                "image": {
+                    "src": "/images/portfolio/portfolio-03.jpg"
+                }
+            }
+        ]
+    },
+    "footer-link-widget": {
+        "menu": [
+            {
+                "id": 1,
+                "text": "Terminos y Condiciones",
+                "path": "/"
+            },
+            {
+                "id": 2,
+                "text": "Politicas de Privacidad",
+                "path": "/"
+            }
+        ]
+    },
+    "copyright_text": "+507 6726-8167 507",
+    "correo": "info@fabmetal.com.pa ",
+    "horario": "Lun-Vier 07:00 - 16:00"
+}

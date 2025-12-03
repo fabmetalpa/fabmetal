@@ -1,0 +1,12 @@
+{
+    "id": "header-data-1",
+    "logo": [
+        {
+            "src": "/images/logo/logo-blanco.png"
+        },
+        {
+            "src": "/images/logo/logo-negro.png"
+        }
+    ],
+    "activity_link": "/activity"
+}

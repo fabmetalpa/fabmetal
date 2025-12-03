@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "text": "Alimentos",
+        "path": "/categoria/INDUSTRIA ALIMENTARIA"
+    },
+    {
+        "id": 2,
+        "text": "Construcción",
+        "path": "/categoria/INDUSTRIA CONSTRUCTORA"
+    },
+    {
+        "id": 3,
+        "text": "Funeraria",
+        "path": "/categoria/INDUSTRIA FUNERARIA"
+    },
+    {
+        "id": 4,
+        "text": "Hostelería",
+        "path": "/categoria/INDUSTRIA HOSTELERIA"
+    },
+    {
+        "id": 5,
+        "text": "Veterinaria",
+        "path": "/categoria/INDUSTRIA VETERINARIA"
+    }
+]

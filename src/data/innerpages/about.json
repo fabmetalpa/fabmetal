@@ -1,0 +1,101 @@
+{
+    "title": "Nosotros",
+    "content": [
+        {
+            "section": "about-section",
+            "section_title": {
+                "title": "La Empresa <br> "
+            },
+            "image": {
+                "src": "/nueva/welding-service.png"
+            },
+            "items": [
+                {
+                    "id": 1,
+                    "title": "¿Quiénes somos?",
+                    "description": "Somos una fábrica en crecimiento, ubicada en la Ciudad de Panamá, especialistas en soldadura TIG, compuesto por un equipo, donde su guía principal es un personal profesional con más de 10 años de experiencia en el área de la soldadura especializada en acero inoxidable. <br/> <br/>  Realizamos un análisis profundo de las necesidades de cada cliente para crear un estilo propio, siempre con trato personalizado y flexible, desarrollando ideas, desde el boceto hasta la instalación final. <br/> <br/> Trabajamos con todo tipo de acero y metal, pero nos especializamos en el Acero inoxidable.",
+                    "path": "/"
+                },
+                {
+                    "id": 2,
+                    "title": "Misión ",
+                    "description": "Nuestra misión consiste en que nuestros proyectos rindan efectividad a nuestros clientes en calidad y confianza, sobrepasando sus expectativas. Por ello nos encontramos comprometidos en actualizarnos constantemente buscando nuevas soluciones y materiales que aporten mejoras significativas y profesional según el proyecto que sostenga. <br/> <br/> <b>Nuevo Proyecto. Nuestra Mejor tarea Completada</b> "
+                }
+            ]
+        },
+        {
+            "section": "quote-section",
+            "section_title": {
+                "title": "DistribInvetigamos"
+            },
+            "texts": [
+                {
+                    "id": 1,
+                    "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting"
+                }
+            ]
+        },
+        {
+            "section": "funfact-section",
+            "section_title": {
+                "title": "Nuestras Estadisticas"
+            },
+            "funfacts": [
+                {
+                    "id": 1,
+                    "title": "Orales",
+                    "counter": 30
+                },
+                {
+                    "id": 2,
+                    "title": "Sarms",
+                    "counter": 60,
+                    "suffix": "+"
+                },
+                {
+                    "id": 3,
+                    "title": "Inyectables",
+                    "counter": 48
+                },
+                {
+                    "id": 4,
+                    "title": "Ciclos",
+                    "counter": 5,
+                    "suffix": "+"
+                }
+            ]
+        },
+        {
+            "section": "cta-section",
+            "headings": [
+                {
+                    "id": 1,
+                    "content": "Estamos conectados para anteder 24/7 "
+                }
+            ],
+            "texts": [
+                {
+                    "id": 1,
+                    "content": ""
+                }
+            ],
+            "buttons": [
+                {
+                    "id": 2,
+                    "path": "/contacto/",
+                    "content": "Contáctanos",
+                    "color": "primary-alta"
+                }
+            ],
+            "image": {
+                "src": "/nueva/welding-service.png"
+            }
+        },
+        {
+            "section": "blog-section",
+            "section_title": {
+                "title": "Our Recent Blog"
+            }
+        }
+    ]
+}
