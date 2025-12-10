@@ -2,9 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import Web3 from "web3";
 import Logo from "@components/logo";
-import MainMenu from "@components/menu/main-menu";
 import MobileMenu from "@components/menu/mobile-menu";
 import SearchForm from "@components/search-form/layout-01";
 import FlyoutSearchForm from "@components/search-form/layout-02";
@@ -12,89 +10,17 @@ import ColorSwitcher from "@components/color-switcher";
 import BurgerButton from "@ui/burger-button";
 import { useOffcanvas, useSticky, useFlyoutSearch } from "@hooks";
 import headerData from "../../../data/general/header-01.json";
-import menuData from "../../../data/general/menu-01.json";
-
 import { FaCartArrowDown } from "react-icons/fa";
 
 
-const Header = ({ className }) => {
+const Header = ({ className, odooCategories = []  }) => {
 
 
-    const [allInyectable, setInyectable] = useState([]);
-    const [menuMobile, setMenu] = useState(menuData);
-    const [isLoad, setIsLoad] = useState(false);
-
-
-    useEffect(() => {
-        obtenerDatos();
-
-    }, []);
-
-    const obtenerDatos = async () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", "Basic Y2tfMjU3YTQ2YjgzY2RlNjc3MGY4MWFkZDRkZmM2MjI0YmExOGMxNWY5Mjpjc18xZjlhZThiZjA5MDNmNTZmNjVjZWVhODVjNGY3MmVhMjExNjlhZTli");
-
-        var requestOptions = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow'
-        };
-        const data = await fetch("https://puromusculos.com/wordpress/index.php//wp-json/wc/v3/products/categories?per_page=99&parent=20", requestOptions)
-        const result = await data.json();
-        console.log(result);
-        setInyectable(result)
-        setIsLoad(true)
-
-        for (let i = 0; i < menuMobile.length; i++) {
-            if (
-                (menuMobile[i].text === 'Inyectables')
-            ) {
-                menuMobile[i].submenu = result;
-            }
-        }
-
-    }
 
     const sticky = useSticky();
     const { offcanvas, offcanvasHandler } = useOffcanvas();
     const { search, searchHandler } = useFlyoutSearch();
 
-    const detectCurrentProvider = () => {
-        let provider;
-        if (window.ethereum) {
-            provider = window.ethereum;
-        } else if (window.web3) {
-            provider = window.web3.currentProvider;
-        } else {
-            console.log(
-                "Non-ethereum browser detected. You should install Metamask"
-            );
-        }
-        return provider;
-    };
-
-    const onConnect = async () => {
-        try {
-            const currentProvider = detectCurrentProvider();
-            if (currentProvider) {
-                await currentProvider.request({
-                    method: "eth_requestAccounts",
-                });
-                const web3 = new Web3(currentProvider);
-                const userAccount = await web3.eth.getAccounts();
-                const account = userAccount[0];
-                const getEthBalance = await web3.eth.getBalance(account);
-                setEthBalance(getEthBalance);
-                setIsAuthenticated(true);
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const onDisconnect = () => {
-        setIsAuthenticated(false);
-    };
 
     return (
         <>
@@ -119,7 +45,17 @@ const Header = ({ className }) => {
                                     id="sideNav"
                                     className="mainmenu-nav d-none d-xl-block"
                                 >
-                                    <MainMenu menu={menuData} inyectable={allInyectable} />
+                                    
+                                    <ul className="mainmenu">
+                  
+                                         {/* Categorías de Odoo */}
+                                        {odooCategories.map(cat => (
+                                            <li key={cat.id}>
+                                            <a href={`/categoria/${cat.id}`}>{cat.name}</a>
+                                            </li>
+                                        ))}
+                                        </ul>
+
                                 </nav>
                             </div>
                         </div>
@@ -168,7 +104,7 @@ const Header = ({ className }) => {
             <MobileMenu
                 isOpen={offcanvas}
                 onClick={offcanvasHandler}
-                menu={menuData}
+                menu={odooCategories}
                 logo={headerData.logo}
             />
 

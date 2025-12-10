@@ -16,8 +16,10 @@ import { useEffect, useState } from "react";
 
 
 
+const Home = ({ odooCategories }) => {
 
-const Home = () => {
+    console.log(odooCategories);
+
     const [destacados1, setDestacados1] = useState([]);
     const [destacados2, setDestacados2] = useState([]);
     const [destacados3, setDestacados3] = useState([]);
@@ -90,7 +92,7 @@ const Home = () => {
     return (
         <Wrapper>
             <SEO pageTitle="Inicio" />
-            <Header />
+            <Header odooCategories={odooCategories}/>
             <main id="main-content">
 
                 <HeroArea data={content["hero-section"]} />
@@ -214,14 +216,78 @@ const Home = () => {
 
 
 
+
+
 export const getServerSideProps = async () => {
+  const ODOO_URL = 'https://fabmetal.odoo.com';
+  const DB = 'fabmetal';
+  const USERNAME = "admin@fabmetal.com.pa";
+  const PASSWORD = "#Fabmetal1*/";
 
-    return {
-        props: {
-            className: "template-color-1",
+  let rootCategories = [];
+
+  try {
+    // 1. Autenticar
+    const authRes = await fetch(`${ODOO_URL}/jsonrpc`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'call',
+        params: {
+          service: 'common',
+          method: 'authenticate',
+          args: [DB, USERNAME, PASSWORD, {}]
         },
-    };
+        id: 1
+      })
+    });
+    const { result: uid } = await authRes.json();
+    if (!uid || typeof uid !== 'number') {
+      throw new Error('Autenticación fallida');
+    }
 
+    // 2. Obtener TODAS las categorías (sin filtro en dominio)
+    const catRes = await fetch(`${ODOO_URL}/jsonrpc`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'call',
+        params: {
+          service: 'object',
+          method: 'execute_kw',
+          args: [
+            DB,
+            uid,
+            PASSWORD,
+            'product.public.category',
+            'search_read',
+            [] // ← dominio vacío = todas
+          ],
+          kwargs: {
+            fields: ['id', 'name', 'parent_id'] // incluir parent_id
+          }
+        },
+        id: 2
+      })
+    });
+    const { result } = await catRes.json();
+    const allCategories = Array.isArray(result) ? result : [];
+
+    // 3. Filtrar EN EL SERVIDOR de Next.js
+    rootCategories = allCategories.filter(cat => cat.parent_id === false);
+
+  } catch (error) {
+    console.error('Error al obtener categorías:', error.message);
+  }
+
+  return {
+    props: {
+      className: "template-color-1",
+      odooCategories: rootCategories,
+    },
+  };
 };
 
 
