@@ -5,16 +5,12 @@ const SubMenuMobile = ({ menu }) => (
     <ul className="submenu mobile-menu-children">
         {menu.map((nav) => (
             <li key={nav.id}>
-                <a href={'/categoria/' + nav.name}>
+                <a href={'/categoria/' + nav.id}>
                     {nav.name}
                 </a>
             </li>
         ))}
-        <li key={20}>
-            <a href={'/categoria/Inyectables'}>
-                Inyectables
-            </a>
-        </li>
+       
     </ul >
 );
 

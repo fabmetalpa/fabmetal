@@ -42,10 +42,10 @@ const Product = ({
                 )}
             >
                 <div className="card-thumbnail">
-                    {image?.src && (
+                    {image && (
                         <Anchor path={`/producto/${title}`}>
                             <img
-                                src={image.src}
+                                src={image}
                                 alt="NFT_portfolio"
                                 width={533}
                                 height={533}

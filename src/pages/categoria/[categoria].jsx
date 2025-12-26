@@ -8,9 +8,33 @@ import LiveExploreArea from "@containers/live-explore/layout-02";
 import CategoryArea from "@containers/category/layout-01";
 
 const Categoria = ({ productos, subcategorias, categoriaNombre, className }) => {
+ 
   console.log(productos)
   console.log(subcategorias)
   console.log(categoriaNombre)
+
+
+  // Transformar subcategorías para incluir URLs de imagen
+  const subcategoriasConImagen = subcategorias?.map(cat => {
+    // Verificar si tiene imagen
+    if (cat.cover_image) {
+      // Crear la URL base64 completa
+      // Nota: cat.cover_image ya debería venir como string base64
+      return {
+        ...cat,
+        image_url: `data:image/png;base64,${cat.cover_image}`
+      };
+    } else {
+      // Si no tiene imagen, usar una por defecto o null
+      return {
+        ...cat,
+        image_url: null // o URL de una imagen por defecto
+      };
+    }
+  }) || [];
+
+  console.log("Subcategorías procesadas:", subcategoriasConImagen);
+
   const titulo = categoriaNombre
     ? categoriaNombre.charAt(0).toUpperCase() + categoriaNombre.slice(1).toLowerCase()
     : "Categoría";
@@ -22,11 +46,12 @@ const Categoria = ({ productos, subcategorias, categoriaNombre, className }) => 
         <Header />
         <main id="main-content">
           <Breadcrumb pageTitle={titulo} currentPage={titulo} />
+          
           <CategoryArea
             className="d-none d-lg-block"
             data={{
               section_title: { title: titulo },
-              categorias: subcategorias,
+              categorias: subcategoriasConImagen
             }}
           />
         </main>
@@ -144,7 +169,7 @@ export const getServerSideProps = async (context) => {
             'product.public.category',
             'read',
             [[id]], // Cambiado a 'read' en lugar de 'search_read'
-            { fields: ['id', 'name'] }
+            { fields: ['id', 'name', 'cover_image'] }
           ]
         },
         id: 2
@@ -174,9 +199,9 @@ export const getServerSideProps = async (context) => {
             'product.public.category',
             'search_read',
             [
-              [['parent_id', '=', id]] // La sintaxis correcta del dominio
+              [['parent_id', '=', id]] 
             ],
-            { fields: ['id', 'name'] }
+            { fields: ['id', 'name', 'cover_image'] }
           ]
         },
         id: 3
@@ -218,8 +243,7 @@ export const getServerSideProps = async (context) => {
             'search_read',
             [
               [['public_categ_ids', 'in', [id]], ['website_published', '=', true]]
-            ],
-            { fields: ['id', 'name', 'list_price'], limit: 100 }
+            ]
           ]
         },
         id: 4
@@ -227,11 +251,51 @@ export const getServerSideProps = async (context) => {
     });
     const prodData = await prodRes.json();
     console.log("🔍 [LOG] Respuesta de productos:", prodData);
-    const productos = (prodData.result || []).map(p => ({
+
+    const productos = (prodData.result || []).map(p => {
+    // Función para crear URL de imagen
+    const crearUrlImagen = (base64Data) => {
+      if (!base64Data || base64Data === false) return null;
+      
+      // Verificar si ya tiene el prefijo
+      if (typeof base64Data === 'string' && base64Data.startsWith('data:')) {
+        return base64Data;
+      }
+      
+      // Determinar el tipo de imagen basado en el primer carácter del base64
+      let mimeType = 'image/png'; // Por defecto
+      if (typeof base64Data === 'string') {
+        if (base64Data.startsWith('/9j') || base64Data.startsWith('/9J')) {
+          mimeType = 'image/jpeg';
+        } else if (base64Data.startsWith('iVBORw')) {
+          mimeType = 'image/png';
+        } else if (base64Data.startsWith('R0lGOD')) {
+          mimeType = 'image/gif';
+        } else if (base64Data.startsWith('UklGR')) {
+          mimeType = 'image/webp';
+        }
+      }
+      
+      return `data:${mimeType};base64,${base64Data}`;
+    };
+
+    return {
       id: p.id,
       name: p.name,
       price: p.list_price,
-    }));
+      // Imágenes con URLs completas
+      image_128: crearUrlImagen(p.image_128),
+      image_1920: crearUrlImagen(p.image_1920),
+      image_512: crearUrlImagen(p.image_512),
+      image_1024: crearUrlImagen(p.image_1024),
+      
+      // O crear una propiedad genérica 'image' con la mejor disponible
+      image: crearUrlImagen(p.image_1920) || crearUrlImagen(p.image_512) || 
+            crearUrlImagen(p.image_1024) || crearUrlImagen(p.image_128)
+    };
+  });
+
+  
     console.log("✅ [OK] Productos encontrados:", productos.length);
 
     return {

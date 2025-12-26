@@ -51,16 +51,12 @@ const Product = ({
 
 
                                 </div>
-                                <div className="last-bid">
-                                    {price}$
-                                </div>
+                                
                             </div>
                             <Anchor path={`/product/${slug}`}>
                                 <h4 className="title">{title}</h4>
                             </Anchor>
                             
-                            <h6 className="title">Cantidad: {cantidad}</h6>
-                            <h6 className="title">Total: {precioTotal}</h6>
                             
                             {/* 
                             <div className="share-wrapper d-flex">

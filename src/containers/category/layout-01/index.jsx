@@ -19,9 +19,10 @@ const CategoryArea = ({ className, space, data }) => {
                     >
                         
                         <CategoryCard
-                            image={item.image}
+                            image={item.image_url}
                             title={item.name}
                             path={item.name}
+                            id={item.id}
                         />
                     </div>
                 ))}

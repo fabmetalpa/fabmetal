@@ -8,8 +8,50 @@ import SubMenu from "./submenu";
 import SubMenuMobile from "./submenumobile";
 import MegaMenu from "./megamenu";
 
-const MobileMenu = ({ isOpen, onClick, menu, logo }) => {
+const MobileMenu = ({ isOpen, onClick, menua, logo }) => {
 
+
+ 
+
+    // Función auxiliar para convertir texto a slug (kebab-case)
+    function toSlug(text) {
+    return text
+        .toLowerCase()
+        .normalize('NFD') // para manejar tildes
+        .replace(/[\u0300-\u036f]/g, '') // elimina acentos
+        .replace(/[^a-z0-9\s/]/g, '') // solo letras, números y espacios
+        .trim()
+        .replace(/\s+/g, '-'); // espacios → guiones
+    }
+
+    // Extraer solo las subcategorías (excluye la raíz "Equipamiento")
+    const equipamientoSubmenu = menua
+    .filter(item => item.display_name.startsWith('Equipamiento / '))
+    .map(item => {
+        const name = item.display_name.replace('Equipamiento / ', '').trim();
+        return {
+        id: item.id,
+        name: name,
+        slug: toSlug(name),
+        parent: 9, 
+        description: '',
+        };
+    });
+
+    const menu = [
+    { id: 1, text: 'Inicio', path: '/' },
+    { id: 2, text: 'Entornos', path: '/Entornos' },
+    {
+        id: 3,
+        text: 'Equipamiento',
+        path: '',
+        submenu: equipamientoSubmenu, 
+    },
+    { id: 4, text: 'Fabricación', path: '/Fabricacion' },
+    { id: 5, text: 'Calidad', path: '/Calidad' },
+    { id: 6, text: 'Proyectos', path: '/Proyectos' },
+    { id: 7, text: 'Contacto', path: '/Contacto' },
+    ];
     console.log(menu);
 
     const onClickHandler = (e) => {
@@ -51,18 +93,17 @@ const MobileMenu = ({ isOpen, onClick, menu, logo }) => {
                                     id={nav.id}
                                     key={nav.id}
                                 >
-                                    
-                                    <a
+                                    <Anchor
                                         className="nav-link its_new"
-                                        href={hasChildren ? "#!" : "/categoria/" +  nav.id}
+                                        path={hasChildren ? "#!" : nav.path}
                                         onClick={
                                             hasChildren
                                                 ? onClickHandler
                                                 : (e) => e
                                         }
                                     >
-                                        {nav.display_name}
-                                    </a>
+                                        {nav.text}
+                                    </Anchor>
                                     {nav?.submenu && (
                                         <SubMenuMobile menu={nav.submenu} />
                                     )}

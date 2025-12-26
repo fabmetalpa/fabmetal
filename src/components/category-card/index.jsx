@@ -3,18 +3,20 @@ import clsx from "clsx";
 import Anchor from "@ui/anchor";
 import { GiMedicines } from "react-icons/gi";
 
-const CategoryCard = ({ className, image, title, path }) => (
-    <a className={clsx("category-style-one", className)} href={path}>
-        {image?.src && (
-            <img
-                src={image.src}
-                alt={title}
-                width={533}
-                height={533}
-            />
-        )}
-        <span className="category-label">{title}</span>
-    </a>
+const CategoryCard = ({ className, image, title, path, id }) => (
+    <div>
+        <a className={clsx("category-style-one", className)} href={path}>
+            {image && (
+                <img
+                    src={image}
+                    alt={image}
+                    width={533}
+                    height={533}
+                />
+            )}
+            <span className="category-label">{title}</span>
+        </a>
+    </div>
 );
 
 CategoryCard.propTypes = {

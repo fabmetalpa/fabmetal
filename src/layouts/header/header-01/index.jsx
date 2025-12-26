@@ -13,15 +13,22 @@ import headerData from "../../../data/general/header-01.json";
 import { FaCartArrowDown } from "react-icons/fa";
 
 
+
+import MainMenu from "@components/menu/main-menu";
+import menuData from "../../../data/general/menu-01.json";
+
 const Header = ({ className, odooCategories = []  }) => {
 
+    console.log(odooCategories)
+
+    const [allInyectable, setInyectable] = useState(odooCategories.filter(category => category.id !== 9));
 
 
     const sticky = useSticky();
     const { offcanvas, offcanvasHandler } = useOffcanvas();
     const { search, searchHandler } = useFlyoutSearch();
 
-
+    
     return (
         <>
 
@@ -46,15 +53,19 @@ const Header = ({ className, odooCategories = []  }) => {
                                     className="mainmenu-nav d-none d-xl-block"
                                 >
                                     
+                                    <MainMenu menu={menuData} inyectable={allInyectable} />
+                                    
+                                    {/*
                                     <ul className="mainmenu">
                   
-                                         {/* Categorías de Odoo */}
+                                        
                                         {odooCategories.map(cat => (
                                             <li key={cat.id}>
                                             <a href={`/categoria/${cat.id}`}>{cat.name}</a>
                                             </li>
                                         ))}
                                         </ul>
+                                    */}
 
                                 </nav>
                             </div>
@@ -104,7 +115,7 @@ const Header = ({ className, odooCategories = []  }) => {
             <MobileMenu
                 isOpen={offcanvas}
                 onClick={offcanvasHandler}
-                menu={odooCategories}
+                menua={odooCategories}
                 logo={headerData.logo}
             />
 

@@ -266,7 +266,7 @@ export const getServerSideProps = async () => {
             [] // ← dominio vacío = todas
           ],
           kwargs: {
-            fields: ['id', 'name', 'parent_id'] // incluir parent_id
+            fields: ['id', 'name', 'parent_id'] 
           }
         },
         id: 2
@@ -276,7 +276,7 @@ export const getServerSideProps = async () => {
     const allCategories = Array.isArray(result) ? result : [];
 
     // 3. Filtrar EN EL SERVIDOR de Next.js
-    rootCategories = allCategories.filter(cat => cat.parent_id === false);
+    rootCategories = allCategories;
 
   } catch (error) {
     console.error('Error al obtener categorías:', error.message);

@@ -10,20 +10,71 @@ import BidTab from "@components/product-details/bid-tab";
 import PlaceBet from "@components/product-details/place-bet";
 import { ImageType } from "@utils/types";
 import PlaceBidModal from "@components/modals/placebid-modal";
-import { useState } from "react";
-
-
-// Demo Image
+import React, { useState } from "react";
 
 const ProductDetailsArea = ({ space, className, product, agregarCarrito }) => {
-
     const [showBidModal, setShowBidModal] = useState(false);
     const handleBidModal = () => {
         setShowBidModal((prev) => !prev);
     };
+
+    // CORRECCIÓN: Ya no necesitas convertir images porque ya es un array
+    const galleryImages = React.useMemo(() => {
+        // Si images ya es un array, usarlo directamente
+        if (Array.isArray(product.images)) {
+            return product.images;
+        }
+        
+        // Si es un objeto (para compatibilidad con versiones anteriores), convertirlo
+        if (typeof product.images === 'object' && product.images !== null) {
+            // Si tiene propiedad 'main' y es un objeto con arrays
+            if (product.images.main && Array.isArray(product.images.main)) {
+                return product.images.main;
+            }
+            
+            // Si es un objeto plano con URLs
+            return Object.entries(product.images || {})
+                .filter(([key, value]) => value && typeof value === 'string')
+                .map(([key, src], index) => ({
+                    id: index,
+                    src: src,
+                    alt: `${product.name} - ${key}`
+                }));
+        }
+        
+        return [];
+    }, [product.images, product.name]);
+
+    console.log("📸 Imágenes para galería:", galleryImages);
+    console.log("📸 Número de imágenes:", galleryImages.length);
+
+    // Opcional: Para debugging, mostrar información detallada de las imágenes
+    if (galleryImages.length > 0) {
+        console.log("📸 Estructura de la primera imagen:", galleryImages[0]);
+    }
+
+    // Eliminar la variable filteredImages ya que no es necesaria
+
+    const descargarPDF = (documento) => {
+        if (!documento || !documento.download_url) {
+            console.error("No hay URL para descargar");
+            return;
+        }
+        
+        // Crear enlace temporal
+        const link = document.createElement('a');
+        link.href = documento.download_url;
+        link.download = documento.name || 'documento.pdf';
+        link.target = '_blank'; // Abrir en nueva pestaña
+        link.rel = 'noopener noreferrer';
+        
+        // Agregar al DOM y hacer clic
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
-
-
         <div
             className={clsx(
                 "product-details-area",
@@ -35,152 +86,54 @@ const ProductDetailsArea = ({ space, className, product, agregarCarrito }) => {
                 <div className="row g-5">
                     <div className="col-lg-7 col-md-12 col-sm-12">
                         <Sticky>
-                            <GalleryTab images={product.images} />
+                            {/* Pasar galleryImages directamente */}
+                            <GalleryTab images={galleryImages} />
                         </Sticky>
                     </div>
                     <div className="col-lg-5 col-md-12 col-sm-12 mt_md--50 mt_sm--60">
                         <div className="rn-pd-content-area mt--10">
                             <ProductTitle
                                 title={product.name}
-
                             />
                             
-                            <span className="bid">
-                                <h4 className="price">
-                                    {product.price != product.regular_price &&
-                                        <strike><span className="latest-bid">$ {product.regular_price} </span></strike>
-                                    }
-                                    $ {product.price} 
-                                </h4>
-                            </span>
-
-                            <div  className="price" dangerouslySetInnerHTML={{ __html: product.acf.especificaciones_tecnicas }}></div>
-                            
-                            
-
-                            <div className="rn-pd-sm-property-wrapper">
-                                
-                            
-                                <div className="catagory-wrapper">
-                                    {product.acf.codigo != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Código</span>
-                                                <span className="color-white value">
-                                                    {product.acf.codigo}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-                                    {product.acf.marca != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Marca</span>
-                                                <span className="color-white value">
-                                                    {product.acf.marca}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-                                    {product.acf.origen != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Origen</span>
-                                                <span className="color-white value">
-                                                    {product.acf.origen}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-                                    {product.acf.material != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Material</span>
-                                                <span className="color-white value">
-                                                    {product.acf.material}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-
-                                    {product.acf.dimensiones_ != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Dimensiones</span>
-                                                <span className="color-white value">
-                                                    {product.acf.dimensiones_}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-                                    {product.acf.estructura_ != '' &&
-                                        <>     
-                                            <div  className="pd-property-inner">
-                                                <span className="color-body type">Estructura</span>
-                                                <span className="color-white value">
-                                                    {product.acf.estructura_}
-                                                </span>
-                                            </div>
-                                        </>
-                                    }
-
-
-
+                            <div className="row mt-4">
+                                <div className="col-12">
+                                    {product.documents && product.documents.length > 0 && (
+                                        <div className="d-grid gap-2">
+                                            <a 
+                                                href={product.documents[0].download_url}
+                                                download={product.documents[0].name}
+                                                className="btn btn-lg btn-outline-success"
+                                            >
+                                                <i className="bi bi-file-arrow-down me-2"></i>
+                                                Click aquí para descargar "{product.documents[0].name}"
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
-
-                                
-
-
                             </div>
-
-
-
-                            {/*
-                            <div className="catagory-collection">
-                                 <ProductCategory owner={product.owner} /> 
-                            <ProductCollection
-                                collection={product.collection}
-                            /> 
-                            </div>
-
-                            <Button
-                                color="primary-alta mt--10"
-                                className=""
-                                onClick={handleBidModal}
-                            >
-                                Agregar al Carrito
-                            </Button>*/}
 
                             <div className="rn-bid-details">
-                                {/*
-                            <BidTab
-                                bids={product?.bids}
-                                owner={product.owner}
-                                properties={product?.properties}
-                                tags={product?.tags}
-                                history={product?.history}
-                            />*/}
                                 <PlaceBet
                                     highest_bid={product.highest_bid}
                                     auction_date={product?.auction_date}
                                     prod={product}
                                     agregarCarrito={agregarCarrito}
                                 />
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-
+ProductDetailsArea.propTypes = {
+    space: PropTypes.oneOf([1, 2]),
+    className: PropTypes.string,
+    product: PropTypes.object.isRequired,
+    agregarCarrito: PropTypes.func,
+};
 
 export default ProductDetailsArea;

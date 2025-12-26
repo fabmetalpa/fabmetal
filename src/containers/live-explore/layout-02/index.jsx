@@ -34,7 +34,7 @@ const LiveExploreArea = ({ data, className, space, gap }) => (
                                 latestBid={prod.latestBid}
                                 price={prod.price}
                                 likeCount={prod.likeCount}
-                                image={prod.images?.[0]}
+                                image={prod.image}
                                 authors={prod.authors}
                                 bitCount={prod.bitCount}
                             />
