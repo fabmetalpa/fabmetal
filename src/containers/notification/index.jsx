@@ -5,18 +5,9 @@ import NoticeCard from "@components/notice-card";
 import { IDType, ImageType } from "@utils/types";
 import Button from "@ui/button";
 import ErrorText from "@ui/error-text";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-// Configuración de conexión a Odoo
-const ODOO_CONFIG = {
-    url: 'https://fabmetal.odoo.com',
-    db: 'fabmetal',
-    username: "admin@fabmetal.com.pa",
-    password: "#Fabmetal1*/"
-};
 
 const NotificationArea = ({ data }) => {
     const {
@@ -32,266 +23,36 @@ const NotificationArea = ({ data }) => {
         status: null,
     });
 
-    // Función para autenticarse en Odoo
-    const authenticateOdoo = async () => {
-        try {
-            const authRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'common',
-                        method: 'authenticate',
-                        args: [ODOO_CONFIG.db, ODOO_CONFIG.username, ODOO_CONFIG.password, {}]
-                    },
-                    id: 1
-                })
-            });
-            
-            const authData = await authRes.json();
-            return authData.result;
-        } catch (error) {
-            console.error("Error de autenticación Odoo:", error);
-            throw new Error("No se pudo conectar con el sistema");
-        }
+    const [current, setCurrent] = useState("newest");
+    const [notifications, setNotifications] = useState([]);
+
+    const changeHandler = (item) => {
+        setCurrent(item.value);
     };
 
-    // Función para buscar o crear cliente en Odoo
-    const findOrCreatePartner = async (uid, formData) => {
-        try {
-            // Primero buscar por email
-            const searchRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'res.partner',
-                            'search_read',
-                            [
-                                [['email', '=', formData.correo]]
-                            ],
-                            { fields: ['id'], limit: 1 }
-                        ]
-                    },
-                    id: 2
-                })
-            });
-            
-            const searchData = await searchRes.json();
-            
-            if (searchData.result && searchData.result.length > 0) {
-                return searchData.result[0].id; // Retornar ID del partner existente
-            }
-            
-            // Si no existe, crear nuevo partner
-            const createRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'res.partner',
-                            'create',
-                            [{
-                                name: formData.nombre,
-                                email: formData.correo,
-                                phone: formData.telefono,
-                                street: formData.direccion || '',
-                                contacto: formData.contacto || '',
-                                type: 'contact',
-                                company_type: 'person'
-                            }]
-                        ]
-                    },
-                    id: 3
-                })
-            });
-            
-            const createData = await createRes.json();
-            return createData.result; // Retornar ID del nuevo partner
-        } catch (error) {
-            console.error("Error al buscar/crear partner:", error);
-            throw error;
+    const filterHandler = useCallback(() => {
+        if (data?.notifications) {
+            const allNotifications = data.notifications;
+            const filterdSellers = allNotifications.filter(
+                (noti) => noti.type === current
+            );
+            setNotifications(filterdSellers);
         }
-    };
+    }, [current, data]);
 
-    // Función para obtener el product.product ID (variante) a partir de product.template ID
-    const getProductVariantId = async (uid, productTemplateId) => {
-        try {
-            const searchRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'product.product',
-                            'search_read',
-                            [
-                                [['product_tmpl_id', '=', productTemplateId]]
-                            ],
-                            { 
-                                fields: ['id', 'display_name'],
-                                limit: 1 
-                            }
-                        ]
-                    },
-                    id: 4
-                })
-            });
-            
-            const searchData = await searchRes.json();
-            
-            if (!searchData.result || searchData.result.length === 0) {
-                throw new Error(`No se encontró variante para el producto ID: ${productTemplateId}`);
-            }
-            
-            return searchData.result[0].id;
-        } catch (error) {
-            console.error("Error al obtener variante:", error);
-            throw error;
+    // Calcular total
+    let total = 0;
+    if (data?.productos) {
+        for (let i = 0; i < data.productos.length; i++) {
+            total += Number(data.productos[i].precioTotal || 0);
         }
-    };
+    }
 
-    // Función para crear la cotización en Odoo
-    const createQuotationInOdoo = async (uid, partnerId, cartItems, formData) => {
-        try {
-            // Preparar las líneas de la cotización
-            const orderLines = [];
-            
-            for (const item of cartItems) {
-                // Obtener la variante del producto (product.product)
-                const productId = await getProductVariantId(uid, item.id);
-                
-                orderLines.push([0, 0, {
-                    product_id: productId,
-                    product_uom_qty: item.cantidad || 1,
-                    price_unit: item.price || 0,
-                    name: item.name,
-                    product_uom: 1 // Unidad por defecto
-                }]);
-            }
-            
-            // Crear la cotización (sale.order en Odoo)
-            const createRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'sale.order',
-                            'create',
-                            [{
-                                partner_id: partnerId,
-                                date_order: new Date().toISOString(),
-                                validity_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 días de validez
-                                note: formData.mensaje,
-                                client_order_ref: `WEB-${Date.now()}`,
-                                order_line: orderLines,
-                                state: 'draft', // Estado: borrador
-                                require_payment: false,
-                                require_signature: false
-                            }]
-                        ]
-                    },
-                    id: 5
-                })
-            });
-            
-            const createData = await createRes.json();
-            
-            // Confirmar la cotización (pasar a estado "cotizado")
-            const confirmRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'sale.order',
-                            'action_confirm',
-                            [[createData.result]]
-                        ]
-                    },
-                    id: 6
-                })
-            });
-            
-            const confirmData = await confirmRes.json();
-            
-            // Obtener el número de cotización para mostrar al usuario
-            const readRes = await fetch(`${ODOO_CONFIG.url}/jsonrpc`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'call',
-                    params: {
-                        service: 'object',
-                        method: 'execute_kw',
-                        args: [
-                            ODOO_CONFIG.db,
-                            uid,
-                            ODOO_CONFIG.password,
-                            'sale.order',
-                            'read',
-                            [[createData.result]],
-                            { fields: ['name'] }
-                        ]
-                    },
-                    id: 7
-                })
-            });
-            
-            const readData = await readRes.json();
-            
-            return {
-                success: true,
-                orderId: createData.result,
-                orderNumber: readData.result[0]?.name || createData.result
-            };
-        } catch (error) {
-            console.error("Error al crear cotización:", error);
-            throw error;
-        }
-    };
+    useEffect(() => {
+        filterHandler();
+    }, [filterHandler]);
 
+    // Función principal para enviar la cotización
     const onSubmit = async (formData) => {
         try {
             setServerState({ submitting: true, status: null });
@@ -305,62 +66,88 @@ const NotificationArea = ({ data }) => {
                 return;
             }
             
-            console.log("📋 Datos del formulario:", formData);
-            console.log("🛒 Productos en carrito:", prodsCart);
+            console.log("📋 Enviando cotización a Odoo...");
+            console.log("📦 Productos en carrito:", prodsCart);
             
-            // 1. Autenticarse en Odoo
-            const uid = await authenticateOdoo();
-            console.log("✅ Autenticación exitosa, UID:", uid);
-            
-            // 2. Buscar o crear cliente
-            const partnerId = await findOrCreatePartner(uid, formData);
-            console.log("✅ Cliente procesado, Partner ID:", partnerId);
-            
-            // 3. Crear cotización
-            const quotationResult = await createQuotationInOdoo(uid, partnerId, prodsCart, formData);
-            console.log("✅ Cotización creada:", quotationResult);
-            
-            // 4. Mostrar éxito
-            toast.success(`✅ Cotización creada exitosamente! Número: ${quotationResult.orderNumber}`);
-            
-            // 5. Preparar mensaje para WhatsApp (opcional)
-            let mensajeWsp = `*Nueva Cotización Web - ${quotationResult.orderNumber}*%0A%0A`;
-            mensajeWsp += `*Cliente:* ${formData.nombre}%0A`;
-            mensajeWsp += `*Contacto:* ${formData.contacto}%0A`;
-            mensajeWsp += `*Teléfono:* ${formData.telefono}%0A`;
-            mensajeWsp += `*Email:* ${formData.correo}%0A`;
-            mensajeWsp += `*Mensaje:* ${formData.mensaje}%0A%0A`;
-            mensajeWsp += `*Productos:*%0A`;
-            
-            let total = 0;
-            prodsCart.forEach((prod, index) => {
-                const subtotal = (prod.price || 0) * (prod.cantidad || 1);
-                total += subtotal;
-                mensajeWsp += `${index + 1}. ${prod.name} - Cant: ${prod.cantidad || 1} - $${prod.price || 0}%0A`;
+            // Enviar datos a nuestra API de Next.js
+            const response = await fetch('/api/cotizacion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: formData.nombre,
+                    contacto: formData.contacto,
+                    correo: formData.correo,
+                    telefono: formData.telefono,
+                    direccion: formData.direccion,
+                    mensaje: formData.mensaje,
+                    productos: prodsCart.map(prod => ({
+                        id: prod.id,
+                        name: prod.name,
+                        price: prod.price || 0,
+                        cantidad: prod.cantidad || 1
+                    }))
+                })
             });
             
-            mensajeWsp += `%0A*Total:* $${total}%0A`;
+            const result = await response.json();
             
-            // 6. Limpiar carrito
+            if (!result.success) {
+                throw new Error(result.error || 'Error al crear cotización en Odoo');
+            }
+            
+            // Mostrar éxito
+            toast.success(`✅ Cotización #${result.orderNumber} creada exitosamente en Odoo!`);
+            
+            // Preparar mensaje para WhatsApp
+            let mensajeWsp = `*Nueva Cotización Web - ${result.orderNumber}*%0A%0A`;
+            mensajeWsp += `*Cliente:* ${formData.nombre}%0A`;
+            mensajeWsp += `*Contacto:* ${formData.contacto || formData.nombre}%0A`;
+            mensajeWsp += `*Teléfono:* ${formData.telefono}%0A`;
+            mensajeWsp += `*Email:* ${formData.correo}%0A`;
+            mensajeWsp += `*Dirección:* ${formData.direccion || 'No especificada'}%0A`;
+            mensajeWsp += `*Mensaje:* ${formData.mensaje || 'Sin comentarios'}%0A%0A`;
+            mensajeWsp += `*Productos solicitados:*%0A`;
+            
+            let totalCotizado = 0;
+            prodsCart.forEach((prod, index) => {
+                const subtotal = (prod.price || 0) * (prod.cantidad || 1);
+                totalCotizado += subtotal;
+                mensajeWsp += `${index + 1}. ${prod.name}%0A`;
+                mensajeWsp += `   Cantidad: ${prod.cantidad || 1}%0A`;
+                mensajeWsp += `   Precio unitario: $${prod.price || 0}%0A`;
+                mensajeWsp += `   Subtotal: $${subtotal}%0A%0A`;
+            });
+            
+            mensajeWsp += `*TOTAL COTIZADO:* $${totalCotizado}%0A%0A`;
+            mensajeWsp += `*ID Cotización Odoo:* ${result.orderNumber}%0A`;
+            mensajeWsp += `*Fecha:* ${new Date().toLocaleDateString()}%0A`;
+            mensajeWsp += `_Cotización generada desde la web_`;
+            
+            // Limpiar carrito
             localStorage.removeItem("productosGlobal");
             if (data && data.vaciarCarrito) {
                 data.vaciarCarrito([]);
             }
             
-            // 7. Opcional: Redirigir a WhatsApp
+            // Opción para compartir por WhatsApp
             setTimeout(() => {
                 const whatsappUrl = `https://wa.me/50768055616?text=${mensajeWsp}`;
-                window.open(whatsappUrl, '_blank');
-            }, 2000);
+                
+                if (window.confirm('¿Desea compartir esta cotización por WhatsApp?')) {
+                    window.open(whatsappUrl, '_blank');
+                }
+            }, 1500);
             
             setServerState({ 
                 submitting: false, 
-                status: { ok: true, msg: "Cotización creada exitosamente" } 
+                status: { ok: true, msg: `Cotización #${result.orderNumber} creada exitosamente` } 
             });
             
         } catch (error) {
             console.error("❌ Error en cotización:", error);
-            toast.error(`Error al crear cotización: ${error.message}`);
+            toast.error(`Error: ${error.message}`);
             setServerState({ 
                 submitting: false, 
                 status: { ok: false, msg: error.message } 
@@ -368,51 +155,43 @@ const NotificationArea = ({ data }) => {
         }
     };
 
-    // Resto del código permanece igual...
-    const [current, setCurrent] = useState("newest");
-    const [notifications, setNotifications] = useState([]);
-
-    const changeHandler = (item) => {
-        setCurrent(item.value);
-    };
-
-    const filterHandler = useCallback(() => {
-        const allNotifications = data.notifications;
-        const filterdSellers = allNotifications.filter(
-            (noti) => noti.type === current
-        );
-        setNotifications(filterdSellers);
-    }, [current, data.notifications]);
-
-    let total = 0;
-    for (let i = 0; i < data.productos.length; i++) total += Number(data.productos[i].precioTotal);
-
-    useEffect(() => {
-        filterHandler();
-    }, [filterHandler]);
-
     return (
         <>
             <br/><br/>
-            <ToastContainer position="top-right" autoClose={5000} />
+            <ToastContainer 
+                position="top-right" 
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             
             <div className="rn-notification-area right-fix-notice ">
                 <div className="h--100">
+                    {/* Resumen del carrito */}
                     <div className="notice-heading">
                         <h4>Resumen del Carrito</h4>
-                        {data.productos.map((prod, index) => (
+                        {data?.productos?.map((prod, index) => (
                             <div key={index} style={{marginBottom: '10px', padding: '10px', borderBottom: '1px solid #eee'}}>
                                 <strong>{prod.name}</strong><br/>
-                                Cantidad: {prod.cantidad} | Precio: ${prod.price}<br/>
-                                Subtotal: ${prod.precioTotal}
+                                Cantidad: {prod.cantidad || 1} | Precio: ${prod.price || 0}<br/>
+                                Subtotal: ${prod.precioTotal || prod.price || 0}
                             </div>
                         ))}
-                        <h4>Total: ${total}</h4>
+                        {data?.productos?.length > 0 ? (
+                            <h4>Total: ${total}</h4>
+                        ) : (
+                            <p>No hay productos en el carrito</p>
+                        )}
                     </div>
                     
                     <div className="notice-heading mt-4">
                         <h4>Complete el formulario para generar su cotización en Odoo</h4>
-                        <p>Una vez enviado, se creará automáticamente una cotización en nuestro sistema y nos pondremos en contacto.</p>
+                        <p>Una vez enviado, se creará automáticamente una cotización en nuestro sistema ERP.</p>
                     </div>
                 </div>
             </div>
@@ -435,6 +214,7 @@ const NotificationArea = ({ data }) => {
                                 required: "Nombre es requerido",
                             })}
                             disabled={serverState.submitting}
+                            placeholder="Nombre de la empresa o persona"
                         />
                         {errors.nombre && (
                             <ErrorText>{errors.nombre?.message}</ErrorText>
@@ -442,19 +222,15 @@ const NotificationArea = ({ data }) => {
                     </div>
                     <div className="mb-5">
                         <label htmlFor="contacto" className="form-label">
-                            Persona de Contacto *
+                            Persona de Contacto
                         </label>
                         <input
                             id="contacto"
                             type="text"
-                            {...register("contacto", {
-                                required: "Contacto es requerido",
-                            })}
+                            {...register("contacto")}
                             disabled={serverState.submitting}
+                            placeholder="Persona responsable de la cotización"
                         />
-                        {errors.contacto && (
-                            <ErrorText>{errors.contacto?.message}</ErrorText>
-                        )}
                     </div>
                     <div className="mb-5">
                         <label htmlFor="correo" className="form-label">
@@ -471,6 +247,7 @@ const NotificationArea = ({ data }) => {
                                 },
                             })}
                             disabled={serverState.submitting}
+                            placeholder="ejemplo@empresa.com"
                         />
                         {errors.correo && (
                             <ErrorText>{errors.correo?.message}</ErrorText>
@@ -482,11 +259,12 @@ const NotificationArea = ({ data }) => {
                         </label>
                         <input
                             name="telefono"
-                            type="text"
+                            type="tel"
                             {...register("telefono", {
                                 required: "Teléfono es requerido",
                             })}
                             disabled={serverState.submitting}
+                            placeholder="+507 1234 5678"
                         />
                         {errors.telefono && (
                             <ErrorText>{errors.telefono?.message}</ErrorText>
@@ -501,6 +279,7 @@ const NotificationArea = ({ data }) => {
                             type="text"
                             {...register("direccion")}
                             disabled={serverState.submitting}
+                            placeholder="Dirección para entrega"
                         />
                     </div>
                     <div className="mb-5">
@@ -509,12 +288,12 @@ const NotificationArea = ({ data }) => {
                         </label>
                         <textarea
                             id="mensaje"
-                            rows="3"
+                            rows="4"
                             {...register("mensaje", {
                                 required: "Mensaje es requerido",
                             })}
                             disabled={serverState.submitting}
-                            placeholder="Ej: Necesito esta cotización para aprobación de gerencia, por favor incluir descuento por volumen"
+                            placeholder="Especificaciones técnicas, condiciones especiales, requerimientos adicionales..."
                         />
                         {errors.mensaje && (
                             <ErrorText>{errors.mensaje?.message}</ErrorText>
@@ -524,7 +303,7 @@ const NotificationArea = ({ data }) => {
                     <Button 
                         type="submit" 
                         size="medium"
-                        disabled={serverState.submitting}
+                        disabled={serverState.submitting || !data?.productos?.length}
                     >
                         {serverState.submitting ? "Creando Cotización..." : "Generar Cotización en Odoo"}
                     </Button>
@@ -551,17 +330,7 @@ const NotificationArea = ({ data }) => {
 
 NotificationArea.propTypes = {
     data: PropTypes.shape({
-        notifications: PropTypes.arrayOf(
-            PropTypes.shape({
-                id: IDType,
-                title: PropTypes.string,
-                description: PropTypes.string,
-                path: PropTypes.string,
-                date: PropTypes.string,
-                time: PropTypes.string,
-                image: ImageType,
-            })
-        ),
+        notifications: PropTypes.array,
         productos: PropTypes.array,
         vaciarCarrito: PropTypes.func,
     }),
