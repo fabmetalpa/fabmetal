@@ -10,9 +10,16 @@ import MegaMenu from "./megamenu";
 
 const MobileMenu = ({ isOpen, onClick, menua, logo }) => {
 
-
+    console.log("📱 MobileMenu recibió menua:", menua);
+    console.log("📱 Tipo de menua:", typeof menua);
+    console.log("📱 Es array?:", Array.isArray(menua));
+    
+    if (Array.isArray(menua)) {
+        console.log("📱 Primer elemento:", menua[0]);
+        console.log("📱 Campos disponibles:", menua[0] ? Object.keys(menua[0]) : 'vacío');
+    }
  
-
+    console.log("asdasdsd ", menua)
     // Función auxiliar para convertir texto a slug (kebab-case)
     function toSlug(text) {
     return text
@@ -26,15 +33,31 @@ const MobileMenu = ({ isOpen, onClick, menua, logo }) => {
 
     // Extraer solo las subcategorías (excluye la raíz "Equipamiento")
     const equipamientoSubmenu = menua
-    .filter(item => item.display_name.startsWith('Equipamiento / '))
+    .filter(item => {
+        // Verifica si existe y tiene nombre
+        if (!item || !item.name) return false;
+        
+        // Busca por parent_id = 9 (hijas de Equipamiento)
+        // O por nombre que contenga "Equipamiento" o sea hija de ID 9
+        const isChildOfEquipamiento = item.parent_id && item.parent_id[0] === 9;
+        const hasEquipamientoInName = item.name.includes('Equipamiento') || 
+                                    (item.display_name && item.display_name.includes('Equipamiento'));
+        
+        return isChildOfEquipamiento || hasEquipamientoInName;
+    })
     .map(item => {
-        const name = item.display_name.replace('Equipamiento / ', '').trim();
+        // Extraer el nombre sin "Equipamiento / " si existe
+        const fullName = item.display_name || item.name || '';
+        const name = fullName.replace('Equipamiento / ', '').replace('Equipamiento-', '').trim();
+        
         return {
         id: item.id,
         name: name,
         slug: toSlug(name),
         parent: 9, 
         description: '',
+        // Mantén los datos originales por si acaso
+        original: item
         };
     });
 
