@@ -159,7 +159,6 @@ const SingleSlide = ({
                                 
                                 <Button
                                     color="primary-alta"
-                                    onClick={handleBidModal}
                                     style={{
                                         backgroundColor: "rgba(255,255,255,0.95)",
                                         color: "#000",
@@ -214,7 +213,7 @@ const SingleSlide = ({
                     </div>
                 </div>
             </div>
-            <PlaceBidModal show={showBidModal} handleModal={handleBidModal} />
+            
         </div>
     );
 };
