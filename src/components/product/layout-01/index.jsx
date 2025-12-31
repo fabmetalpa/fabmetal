@@ -60,7 +60,6 @@ const Product = ({
                 <Anchor path={`/producto/${title}`}>
                     <span className="product-name">{title}</span>
                 </Anchor>
-                <span className="latest-bid">${price}</span>
 
             </div>
             <PlaceBidModal show={showBidModal} handleModal={handleBidModal} />

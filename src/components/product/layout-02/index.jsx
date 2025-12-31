@@ -48,17 +48,6 @@ const Product = ({
                             </Anchor>
                         )}
                         <div className="read-content">
-                            <div className="product-share-wrapper">
-                                 
-                                <div className="last-bid">
-                                    {price != regular_price &&
-                                        <strike><span className="latest-bid"> $ {regular_price}<span> </span></span></strike>
-                                    }
-
-                                    $ {price}
-                                    
-                                </div>
-                            </div>
                             <Anchor path={`/producto/${title}`}>
                                 <h6 className="title">{title}</h6>
 

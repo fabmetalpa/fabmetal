@@ -7,7 +7,7 @@ import LiveExploreArea from "@containers/live-explore/layout-01";
 import VideoArea from "@containers/video/layout-01";
 import { normalizedData } from "@utils/methods";
 
-import HeroArea from "@containers/hero/layout-06";
+import HeroArea from "@containers/hero/layout-08";
 
 // Demo Data
 import homepageData from "../data/homepages/home-06.json";
@@ -78,7 +78,7 @@ const Home = ({ odooCategories }) => {
             }
         };
 
-        fetchData();
+        //fetchData();
 
     }, []);
 

@@ -13,7 +13,6 @@ import headerData from "../../../data/general/header-01.json";
 import { FaCartArrowDown } from "react-icons/fa";
 
 import MainMenu from "@components/menu/main-menu";
-import menuData from "../../../data/general/menu-01.json";
 
 const Header = ({ className }) => {
     const [odooCategories, setOdooCategories] = useState([]);
@@ -189,7 +188,7 @@ const Header = ({ className }) => {
                                             <span>Cargando categorías...</span>
                                         </div>
                                     ) : (
-                                        <MainMenu menu={menuData} inyectable={allInyectable} />
+                                        <MainMenu menu={[]} inyectable={allInyectable} />
                                     )}
                                 </nav>
                             </div>

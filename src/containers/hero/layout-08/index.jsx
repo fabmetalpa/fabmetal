@@ -7,7 +7,14 @@ const HeroArea = ({ data }) => (
     <div className="rn-banner-area">
         {data?.banners && (
             <Slider
-                options={{ dots: true }}
+                options={{ 
+                    dots: true,
+                    autoplay: true, // Habilita rotación automática
+                    autoplaySpeed: 5000, // Cambia cada 5 segundos (5000ms)
+                    infinite: true, // Infinito
+                    speed: 1000, // Velocidad de transición (1 segundo)
+                    pauseOnHover: true, // Pausa al pasar el mouse
+                }}
                 className="slider-activation-banner-4 game-banner-short-slick-wrapper slick-arrow-style-one rn-slick-dot-style"
             >
                 {data.banners.map((banner) => (

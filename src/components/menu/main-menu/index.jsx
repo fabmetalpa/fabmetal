@@ -1,6 +1,3 @@
-
-
-
 import SubMenu from "./submenu";
 import Link from 'next/link';
 
@@ -44,7 +41,6 @@ const MainMenu = ({ menu, inyectable }) => (
             </ul>
         </li>
 
-
         <li
             className=" with-megame"
         >
@@ -53,13 +49,6 @@ const MainMenu = ({ menu, inyectable }) => (
             </Link>
         </li>
 
-        <li
-            className=" with-megame"
-        >
-            <Link legacyBehavior href="/">
-                Calidad  
-            </Link>
-        </li>
 
         <li
             className=" with-megame"

@@ -6,34 +6,156 @@ import Footer from "@layout/footer/footer-01";
 import Breadcrumb from "@components/breadcrumb";
 import LiveExploreArea from "@containers/live-explore/layout-02";
 import CategoryArea from "@containers/category/layout-01";
+import { useEffect } from "react";
+
+// Función mejorada para crear URL de imagen desde Odoo
+const crearUrlImagenOdoo = (base64Data) => {
+  if (!base64Data || base64Data === false || typeof base64Data !== 'string') {
+    console.log("📸 [DEBUG] No hay datos de imagen o no es string válido");
+    return null;
+  }
+  
+  // Limitar tamaño para debugging
+  const preview = base64Data.length > 100 ? 
+    `${base64Data.substring(0, 100)}...` : 
+    base64Data;
+  
+  console.log(`📸 [DEBUG] Base64 data recibida: ${preview}`);
+  
+  // Si ya tiene el prefijo data:image, devolverlo directamente
+  if (base64Data.startsWith('data:image/')) {
+    console.log("✅ [DEBUG] Imagen ya viene con prefijo data:image");
+    return base64Data;
+  }
+  
+  // Detectar formato por los primeros caracteres del base64
+  let mimeType = 'image/png'; // Por defecto
+  
+  if (base64Data.startsWith('/9j') || base64Data.startsWith('/9J')) {
+    // JPEG
+    mimeType = 'image/jpeg';
+    console.log("📸 [DEBUG] Formato detectado: JPEG");
+  } else if (base64Data.startsWith('iVBORw')) {
+    // PNG
+    mimeType = 'image/png';
+    console.log("📸 [DEBUG] Formato detectado: PNG");
+  } else if (base64Data.startsWith('R0lGOD')) {
+    // GIF
+    mimeType = 'image/gif';
+    console.log("📸 [DEBUG] Formato detectado: GIF");
+  } else if (base64Data.startsWith('UklGR')) {
+    // WebP
+    mimeType = 'image/webp';
+    console.log("📸 [DEBUG] Formato detectado: WebP");
+  } else if (base64Data.startsWith('PHN2Zy') || base64Data.startsWith('PD94')) {
+    // SVG
+    mimeType = 'image/svg+xml';
+    console.log("📸 [DEBUG] Formato detectado: SVG");
+  } else if (base64Data.startsWith('Qk')) {
+    // BMP
+    mimeType = 'image/bmp';
+    console.log("📸 [DEBUG] Formato detectado: BMP");
+  } else {
+    // Para otros formatos, intentar detectar por contenido
+    console.warn("⚠️ [DEBUG] Formato no reconocido, intentando detectar...");
+    
+    // Si tiene caracteres extraños al inicio (posiblemente de Odoo), limpiar
+    const cleanBase64 = base64Data.trim();
+    
+    // Intentar con los formatos más comunes
+    if (cleanBase64.startsWith('iVBOR')) {
+      mimeType = 'image/png';
+    } else if (cleanBase64.startsWith('/9')) {
+      mimeType = 'image/jpeg';
+    } else {
+      console.warn("⚠️ [DEBUG] Formato no reconocido, usando PNG por defecto");
+    }
+  }
+  
+  // Limitar tamaño si es muy grande (para rendimiento)
+  const base64Limpiado = base64Data.trim();
+  
+  // Crear la URL data:image
+  const imageUrl = `data:${mimeType};base64,${base64Limpiado}`;
+  console.log(`✅ [DEBUG] URL de imagen creada: ${imageUrl.substring(0, 80)}...`);
+  
+  return imageUrl;
+};
+
+// Componente para manejar errores de carga de imágenes
+const ImagenSegura = ({ src, alt, className, defaultImage = "/images/default-image.jpg" }) => {
+  const [error, setError] = useState(false);
+
+  if (error || !src) {
+    return <img src={defaultImage} alt={alt} className={className} />;
+  }
+
+  return (
+    <img 
+      src={src} 
+      alt={alt} 
+      className={className}
+      onError={() => {
+        console.warn(`⚠️ Error cargando imagen: ${src?.substring(0, 50)}...`);
+        setError(true);
+      }}
+    />
+  );
+};
 
 const Categoria = ({ productos, subcategorias, categoriaNombre, className }) => {
  
-  console.log(productos)
-  console.log(subcategorias)
-  console.log(categoriaNombre)
-
+  console.log("📊 [LOG FRONTEND] Productos recibidos:", productos?.length || 0);
+  console.log("📊 [LOG FRONTEND] Subcategorías recibidas:", subcategorias?.length || 0);
+  console.log("📊 [LOG FRONTEND] Nombre categoría:", categoriaNombre);
 
   // Transformar subcategorías para incluir URLs de imagen
   const subcategoriasConImagen = subcategorias?.map(cat => {
     // Verificar si tiene imagen
     if (cat.cover_image) {
-      // Crear la URL base64 completa
-      // Nota: cat.cover_image ya debería venir como string base64
+      // Usar la función mejorada para crear URL
       return {
         ...cat,
-        image_url: `data:image/png;base64,${cat.cover_image}`
+        image_url: crearUrlImagenOdoo(cat.cover_image)
       };
     } else {
-      // Si no tiene imagen, usar una por defecto o null
+      // Si no tiene imagen, usar null
       return {
         ...cat,
-        image_url: null // o URL de una imagen por defecto
+        image_url: null
       };
     }
   }) || [];
 
-  console.log("Subcategorías procesadas:", subcategoriasConImagen);
+  console.log("✅ [LOG FRONTEND] Subcategorías procesadas:", subcategoriasConImagen);
+
+  // Debugging de imágenes en el cliente
+  useEffect(() => {
+    if (subcategoriasConImagen.length > 0) {
+      console.log("🔍 [DEBUG CLIENTE] Revisando formato de imágenes de subcategorías:");
+      subcategoriasConImagen.forEach((cat, idx) => {
+        if (cat.cover_image) {
+          console.log(`📸 Subcategoría ${idx} (${cat.name}):`, {
+            tieneImagen: !!cat.cover_image,
+            longitudBase64: cat.cover_image?.length || 0,
+            prefijoBase64: cat.cover_image?.substring(0, 30),
+            urlGenerada: cat.image_url?.substring(0, 80)
+          });
+        }
+      });
+    }
+    
+    if (productos?.length > 0) {
+      console.log("🔍 [DEBUG CLIENTE] Revisando formato de imágenes de productos:");
+      productos.forEach((prod, idx) => {
+        if (prod.image) {
+          console.log(`📸 Producto ${idx} (${prod.name}):`, {
+            urlGenerada: prod.image?.substring(0, 80)
+          });
+        }
+      });
+    }
+  }, [subcategoriasConImagen, productos]);
 
   const titulo = categoriaNombre
     ? categoriaNombre.charAt(0).toUpperCase() + categoriaNombre.slice(1).toLowerCase()
@@ -101,6 +223,12 @@ Categoria.propTypes = {
   className: PropTypes.string,
 };
 
+ImagenSegura.propTypes = {
+  src: PropTypes.string,
+  alt: PropTypes.string,
+  className: PropTypes.string,
+  defaultImage: PropTypes.string,
+};
 
 export const getServerSideProps = async (context) => {
   console.log("🔍 [LOG] Entrando a getServerSideProps");
@@ -191,11 +319,11 @@ export const getServerSideProps = async (context) => {
       }
       
     } else {
-      // Es un nombre de categoría (CORREGIDO: sin website_published)
+      // Es un nombre de categoría
       const nombreCategoria = categoria.trim();
       console.log("🔍 [LOG] Parámetro es un nombre:", nombreCategoria);
       
-      // Buscar categoría por nombre (CORRECCIÓN: eliminado website_published)
+      // Buscar categoría por nombre
       const searchRes = await fetch(`${ODOO_URL}/jsonrpc`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -213,7 +341,6 @@ export const getServerSideProps = async (context) => {
               'search_read',
               [
                 [['name', '=ilike', `%${nombreCategoria}%`]]
-                // REMOVIDO: ['website_published', '=', true] - Este campo no existe
               ],
               { fields: ['id', 'name', 'cover_image'], limit: 1 }
             ]
@@ -230,7 +357,7 @@ export const getServerSideProps = async (context) => {
         categoriaNombre = searchData.result[0].name;
         console.log("✅ [OK] Categoría encontrada:", { id: categoriaId, nombre: categoriaNombre });
       } else {
-        // Intentar búsqueda más flexible (sin website_published)
+        // Intentar búsqueda más flexible
         console.log("🔍 [LOG] Intentando búsqueda flexible...");
         const flexibleSearchRes = await fetch(`${ODOO_URL}/jsonrpc`, {
           method: 'POST',
@@ -306,7 +433,7 @@ export const getServerSideProps = async (context) => {
 
     console.log("🎯 [OK] Categoría a procesar:", { id: categoriaId, nombre: categoriaNombre });
 
-    // === 3. BUSCAR SUBCATEGORÍAS (CORREGIDO: sin website_published) ===
+    // === 3. BUSCAR SUBCATEGORÍAS ===
     console.log("🔍 [LOG] Buscando subcategorías de ID:", categoriaId);
     const subcatRes = await fetch(`${ODOO_URL}/jsonrpc`, {
       method: 'POST',
@@ -325,12 +452,11 @@ export const getServerSideProps = async (context) => {
             'search_read',
             [
               [['parent_id', '=', categoriaId]]
-              // REMOVIDO: ['website_published', '=', true]
             ],
             { 
               fields: ['id', 'name', 'cover_image'],
               order: 'sequence asc',
-              limit: 20 // LIMIT para reducir datos
+              limit: 20
             }
           ]
         },
@@ -342,13 +468,12 @@ export const getServerSideProps = async (context) => {
     const subcategorias = subcatData.result || [];
     console.log("✅ [OK] Subcategorías encontradas:", subcategorias.length);
 
-    // Si hay subcategorías, retornarlas (CON DATOS REDUCIDOS)
+    // Si hay subcategorías, retornarlas
     if (subcategorias.length > 0) {
-      // Reducir tamaño de datos enviados al frontend
       const subcategoriasLigeras = subcategorias.map(cat => ({
         id: cat.id,
         name: cat.name,
-        cover_image: cat.cover_image ? cat.cover_image.substring(0, 1000) : null // Limitar tamaño de base64
+        cover_image: cat.cover_image ? cat.cover_image : null
       }));
       
       return {
@@ -361,7 +486,7 @@ export const getServerSideProps = async (context) => {
       };
     }
 
-    // === 4. BUSCAR PRODUCTOS (OPTIMIZADO para reducir datos) ===
+    // === 4. BUSCAR PRODUCTOS ===
     console.log("🔍 [LOG] Buscando productos en categoría ID:", categoriaId);
     const prodRes = await fetch(`${ODOO_URL}/jsonrpc`, {
       method: 'POST',
@@ -385,15 +510,14 @@ export const getServerSideProps = async (context) => {
               ]
             ],
             { 
-              // SOLO CAMPOS ESENCIALES para reducir datos
               fields: [
                 'id', 
                 'name', 
                 'list_price',
-                'image_512' // Solo una imagen (la más pequeña)
+                'image_512'
               ],
               order: 'name asc',
-              limit: 30 // LIMIT para reducir datos
+              limit: 30
             }
           ]
         },
@@ -404,31 +528,12 @@ export const getServerSideProps = async (context) => {
     const prodData = await prodRes.json();
     console.log("📊 [LOG] Productos brutos encontrados:", prodData.result?.length || 0);
 
-    // Función optimizada para crear URL de imagen
-    const crearUrlImagenOptimizada = (base64Data) => {
-      if (!base64Data || base64Data === false || typeof base64Data !== 'string') {
-        return null;
-      }
-      
-      // Limitar tamaño del base64 (solo primeros 5000 chars para thumbnails)
-      const base64Limitado = base64Data.length > 5000 ? 
-        base64Data.substring(0, 5000) : base64Data;
-      
-      // Determinar tipo MIME rápido
-      let mimeType = 'image/png';
-      if (base64Limitado.startsWith('/9j')) {
-        mimeType = 'image/jpeg';
-      }
-      
-      return `data:${mimeType};base64,${base64Limitado}`;
-    };
-
-    // Procesar productos con datos mínimos
+    // Procesar productos usando la función mejorada
     const productosLigeros = (prodData.result || []).map(p => ({
       id: p.id,
       name: p.name,
       price: p.list_price || 0,
-      image: crearUrlImagenOptimizada(p.image_512) // Solo una imagen
+      image: crearUrlImagenOdoo(p.image_512) // Usar función mejorada
     }));
 
     console.log("✅ [OK] Productos procesados:", productosLigeros.length);
@@ -457,6 +562,5 @@ export const getServerSideProps = async (context) => {
     };
   }
 };
-
 
 export default Categoria;
