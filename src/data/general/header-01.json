@@ -2,10 +2,10 @@
     "id": "header-data-1",
     "logo": [
         {
-            "src": "/images/logo/logo-blanco.png"
+            "src": "/images/logo/blanco.png"
         },
         {
-            "src": "/images/logo/logo-negro.png"
+            "src": "/images/logo/azul.png"
         }
     ],
     "activity_link": "/activity"

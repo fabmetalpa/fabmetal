@@ -8,7 +8,7 @@ const Logo = ({ className, logo }) => (
         {logo?.[0]?.src && (
             <Anchor className="logo-light" path="/">
                 <img
-                    src="/logo-blanco.png"
+                    src="images/logo/blanco.png"
                     alt="Logo Blanco"
                     title="Logo Blanco"
                     width={150}
@@ -20,7 +20,7 @@ const Logo = ({ className, logo }) => (
         {logo?.[1]?.src && (
             <Anchor className="logo-dark" path="/">
                 <img
-                    src="/logo-color-menu.png"
+                    src="images/logo/azul.png"
                     alt="Logo Dark"
                     title="Logo Dark"
                     width={150}
