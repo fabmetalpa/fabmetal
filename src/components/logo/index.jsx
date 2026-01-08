@@ -11,8 +11,8 @@ const Logo = ({ className, logo }) => (
                     src="images/logo/blanco.png"
                     alt="Logo Blanco"
                     title="Logo Blanco"
-                    width={150}
-                    height={55}
+                    width={60}
+                    height={85}
                     priority
                 />
             </Anchor>
@@ -23,8 +23,8 @@ const Logo = ({ className, logo }) => (
                     src="images/logo/azul.png"
                     alt="Logo Dark"
                     title="Logo Dark"
-                    width={150}
-                    height={55}
+                    width={60}
+                    height={85}
                     priority
                 />
             </Anchor>
@@ -43,3 +43,4 @@ Logo.propTypes = {
 };
 
 export default Logo;
+
